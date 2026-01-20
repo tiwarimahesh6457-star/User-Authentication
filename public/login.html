@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+</head>
+<body>
+
+<h1 id="title">Login</h1>
+
+<form id="loginForm">
+  Email:
+  <input type="email" id="l-email" required /><br><br>
+
+Password: <input type="password" id="l-password" required /><br><br>
+
+<button type="submit">Login</button>
+
+</form>
+
+<p id="msg"></p>
+
+<!-- Admin Section -->
+
+<div id="admin-section" style="display:none;">
+  <h2>All Users</h2>
+  <ul id="users"></ul>
+</div>
+
+
+<script>
+  const API = "http://localhost:4000/api";
+  const form = document.getElementById("loginForm");
+  const msg = document.getElementById("msg");
+
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.innerText = "";
+
+    const email = document.getElementById("l-email").value.trim();
+    const password = document.getElementById("l-password").value.trim();
+
+    try {
+      const res = await fetch(`${API}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        msg.innerText = data.message || "Login successfull";
+        window.location.href="Dashboard.html"
+      } else {
+        msg.innerText = data.message || "Invalid email or password";
+      }
+    } catch (err) {
+      msg.innerText = "Server error";
+    }
+  });
+
+</script>
+
+</body>
+</html>
